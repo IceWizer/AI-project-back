@@ -41,7 +41,7 @@ class LoginController extends AbstractController
     }
 
     #[Route("/api/auth/register", name: "api_register", methods: ["POST"])]
-    public function register(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, UserRepository $userRepository, MailerInterface $mailer, string $appUrl = "https://app.password-manager.icewize.fr/"): Response
+    public function register(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, UserRepository $userRepository, MailerInterface $mailer): Response
     {
         $payload = $request->getPayload();
 
@@ -56,19 +56,19 @@ class LoginController extends AbstractController
         $validator = Validation::createValidator();
 
         $rules = [
-            'email' => [new Required(), new ConstraintsEmail()],
-            'password' => [new Required(), new Type('string')],
+            'email' => [new Required(), new NotBlank(message: "email.not_blank"), new ConstraintsEmail(message: "email.format")],
+            'password' => [new Required(), new NotBlank(message: "password.not_blank"), new Type('string', "password.string")],
         ];
 
         $violations = [];
         foreach ($rules as $key => $value) {
             $violation = $validator->validate($payload->get($key), $value);
-            if (count($violation) > 0) {
+            if ($violation->has(0)) {
                 $violations[$key] = $violation->get(0)->getMessage();
             }
         }
 
-        if (count($violations) > 0) {
+        if (empty($violations) === false) {
             return $this->json([
                 'message' => 'Validation error',
                 'errors' => $violations,
@@ -94,11 +94,10 @@ class LoginController extends AbstractController
         $em->flush();
 
         $email = (new Email())
-            ->from('no-reply@password-manager.icewize.fr')
             ->to($emailField)
             ->subject('Vérification de votre adresse email')
             ->text('Veuillez cliquer sur ce lien pour valider votre adresse email')
-            ->html('<a href="' . $appUrl . 'verify-email/' . $user->getToken() . '">Cliquez ici pour valider votre adresse email</a>');
+            ->html('<a href="' . $this->getParameter("app.app_url") . 'verify-email/' . $user->getToken() . '">Cliquez ici pour valider votre adresse email</a>');
 
         try {
             $mailer->send($email);
@@ -138,7 +137,7 @@ class LoginController extends AbstractController
     }
 
     #[Route("/api/auth/forgot-password", name: "api_forgot_password", methods: ["POST"], options: ["no_auth" => true])]
-    public function forgotPassword(Request $request, EntityManagerInterface $em, UserRepository $userRepository, MailerInterface $mailer, string $appUrl = "https://app.password-manager.icewize.fr/"): Response
+    public function forgotPassword(Request $request, EntityManagerInterface $em, UserRepository $userRepository, MailerInterface $mailer): Response
     {
         $payload = $request->getPayload();
 
@@ -159,11 +158,10 @@ class LoginController extends AbstractController
         $user->setEmailVerifiedAt(null);
 
         $email = (new Email())
-            ->from('no-reply@password-manager.icewize.fr')
             ->to($emailField)
             ->subject('Récupération de mot de passe')
             ->text('Veuillez cliquer sur ce lien pour réinitialiser votre mot de passe')
-            ->html('<a href="' . $appUrl . 'reset-password/' . $user->getToken() . '">Cliquez ici pour réinitialiser votre mot de passe</a>');
+            ->html('<a href="' . $this->getParameter("app.app_url") . 'reset-password/' . $user->getToken() . '">Cliquez ici pour réinitialiser votre mot de passe</a>');
 
         try {
             $mailer->send($email);

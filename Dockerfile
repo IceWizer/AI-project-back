@@ -1,5 +1,5 @@
-FROM php:8.3.3-fpm-alpine
-LABEL authors="flori"
+FROM php:8.3-fpm-alpine
+LABEL authors="Florian Charlot"
 
 COPY --from=composer:2.1.9 /usr/bin/composer /usr/bin/composer
 
@@ -13,27 +13,23 @@ RUN apk add --no-cache \
 	&& docker-php-ext-install \
 	pdo_mysql \
 	zip \
-	&& rm -rf /var/cache/apk/*
-
-# Add xdebug
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS
-RUN apk add --update linux-headers
-RUN pecl install xdebug-3.3.2
-RUN apk del -f .build-deps
+	&& rm -rf /var/cache/apk/* \
+	# Add xdebug
+	&& apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+	&& apk add --no-cache --update linux-headers \
+	&& pecl install xdebug-3.3.2 \
+	&& apk del -f .build-deps
 
 COPY ./ /var/www/html/
 
-RUN curl -sS https://get.symfony.com/cli/installer | bash && mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
-
-# Run composer install to install the dependencies
-RUN composer install --no-interaction
+RUN curl -sS https://get.symfony.com/cli/installer | bash && mv /root/.symfony5/bin/symfony /usr/local/bin/symfony && \
+	composer install --no-interaction
 
 EXPOSE 80
 EXPOSE 9003
 
 # Entrypoint script
-COPY ./docker/php/entrypoint.sh /docker/php/entrypoint.sh
-RUN chmod +x /docker/php/entrypoint.sh
+COPY --chmod=755 ./docker/php/entrypoint.sh /docker/php/entrypoint.sh
 
 ADD docker/php/conf.d/php.ini /usr/local/etc/php/
 ADD docker/php/conf.d/www.conf /usr/local/etc/php-fpm.d/

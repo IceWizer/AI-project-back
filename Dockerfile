@@ -22,8 +22,9 @@ RUN apk add --no-cache \
 
 COPY ./ /var/www/html/
 
-RUN curl -sS https://get.symfony.com/cli/installer | bash && mv /root/.symfony5/bin/symfony /usr/local/bin/symfony && \
-	composer install --no-interaction
+RUN curl -sS https://get.symfony.com/cli/installer | bash
+RUN	mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
+RUN	composer install --no-interaction --no-scripts
 
 EXPOSE 80
 EXPOSE 9003

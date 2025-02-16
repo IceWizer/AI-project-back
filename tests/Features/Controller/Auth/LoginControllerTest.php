@@ -427,7 +427,7 @@ class LoginControllerTest extends WebTestCase
         }
         $this->assertJson($content);
         $this->assertJsonStringEqualsJsonString(
-            '{"message":"Validation error","errors":{"email":"This value is not a valid email address."}}',
+            '{"message":"Validation error","errors":{"email":"email.format"}}',
             $content
         );
 
@@ -447,7 +447,7 @@ class LoginControllerTest extends WebTestCase
         }
         $this->assertJson($content);
         $this->assertJsonStringEqualsJsonString(
-            '{"message":"Validation error","errors":{"password":"This value should be of type string."}}',
+            '{"message":"Validation error","errors":{"password":"password.string"}}',
             $content
         );
 

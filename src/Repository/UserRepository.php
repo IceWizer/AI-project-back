@@ -17,17 +17,17 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private StrRandom $strRandom)
     {
         parent::__construct($registry, User::class);
     }
 
     public function generateToken(int $min, int $max): string
     {
-        $token = StrRandom::generateRandomString($min, $max);
+        $token = $this->strRandom->generateRandomString($min, $max);
 
         while ($this->findOneBy(['token' => $token])) {
-            $token = StrRandom::generateRandomString($min, $max);
+            $token = $this->strRandom->generateRandomString($min, $max);
         }
 
         return $token;

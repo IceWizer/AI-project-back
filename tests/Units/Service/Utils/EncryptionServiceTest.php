@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Tests\Units\Service;
+namespace App\Tests\Units\Service\Utils;
 
-use App\Service\EncryptionService;
+use App\Service\Utils\EncryptionService;
 use App\Tests\Common\BaseTestCase;
 
 class EncryptionServiceTest extends BaseTestCase
 {
     /**
-     * @covers \App\Service\EncryptionService::__construct()
+     * @covers \App\Service\Utils\EncryptionService::__construct()
      */
     public function testConstruct(): void
     {
@@ -21,7 +21,7 @@ class EncryptionServiceTest extends BaseTestCase
     }
 
     /**
-     * @covers \App\Service\EncryptionService::encrypt()
+     * @covers \App\Service\Utils\EncryptionService::encrypt()
      */
     public function testEncrypt(): void
     {
@@ -32,7 +32,7 @@ class EncryptionServiceTest extends BaseTestCase
     }
 
     /**
-     * @covers \App\Service\EncryptionService::decrypt()
+     * @covers \App\Service\Utils\EncryptionService::decrypt()
      */
     public function testDecrypt(): void
     {
@@ -44,7 +44,7 @@ class EncryptionServiceTest extends BaseTestCase
     }
 
     /**
-     * @covers \App\Service\EncryptionService::decrypt()
+     * @covers \App\Service\Utils\EncryptionService::decrypt()
      */
     public function testDecryptEmptyData(): void
     {
@@ -55,7 +55,7 @@ class EncryptionServiceTest extends BaseTestCase
     }
 
     /**
-     * @covers \App\Service\EncryptionService::decrypt()
+     * @covers \App\Service\Utils\EncryptionService::decrypt()
      */
     public function testDecryptNotBase64EncodedData(): void
     {
@@ -66,7 +66,7 @@ class EncryptionServiceTest extends BaseTestCase
     }
 
     /**
-     * @covers \App\Service\EncryptionService::decrypt()
+     * @covers \App\Service\Utils\EncryptionService::decrypt()
      */
     public function testDecryptInvalidData(): void
     {

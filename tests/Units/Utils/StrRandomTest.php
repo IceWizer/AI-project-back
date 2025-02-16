@@ -7,18 +7,26 @@ use PHPUnit\Framework\TestCase;
 
 class StrRandomTest extends TestCase
 {
+    private StrRandom $strRandom;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->strRandom = new StrRandom();
+    }
+
     /**
      * @covers \App\Utils\StrRandom::generateRandomString()
      */
     public function testStrRandom(): void
     {
         // General case
-        $str = StrRandom::generateRandomString(32, 64);
+        $str = $this->strRandom->generateRandomString(32, 64);
         $this->assertIsString($str);
         $this->assertGreaterThanOrEqual(32, strlen($str)); // Is the string length greater than or equal to 32?
         $this->assertLessThanOrEqual(64, strlen($str)); // Is the string length less than or equal to 64?
 
-        $str2 = StrRandom::generateRandomString(32, 64);
+        $str2 = $this->strRandom->generateRandomString(32, 64);
         $this->assertNotEquals($str, $str2); // Are the two strings different?
     }
 
@@ -27,11 +35,11 @@ class StrRandomTest extends TestCase
      */
     public function testStrRandomLimitCases(): void
     {
-        $str = StrRandom::generateRandomString(1);
+        $str = $this->strRandom->generateRandomString(1);
         $this->assertIsString($str);
         $this->assertEquals(1, strlen($str)); // Is the string length equal to 1?
 
-        $str = StrRandom::generateRandomString(StrRandom::$maxRandomLength);
+        $str = $this->strRandom->generateRandomString(StrRandom::$maxRandomLength);
         $this->assertIsString($str);
         $this->assertEquals(StrRandom::$maxRandomLength, strlen($str)); // Is the string length equal to StrRandom::$maxRandomLength);?
     }
@@ -41,7 +49,7 @@ class StrRandomTest extends TestCase
      */
     public function testStrRandomEdgeCases(): void
     {
-        $str = StrRandom::generateRandomString(32);
+        $str = $this->strRandom->generateRandomString(32);
         $this->assertIsString($str);
         $this->assertEquals(32, strlen($str)); // Is the string length equal to 32?
     }
@@ -56,7 +64,7 @@ class StrRandomTest extends TestCase
         $this->expectExceptionMessage('Min length cannot be greater than max length');
 
         // This should trigger the exception
-        StrRandom::generateRandomString(64, 32);
+        $this->strRandom->generateRandomString(64, 32);
     }
 
     /**
@@ -69,7 +77,7 @@ class StrRandomTest extends TestCase
         $this->expectExceptionMessage('Min length must be at least 1');
 
         // This should trigger the exception
-        StrRandom::generateRandomString(0);
+        $this->strRandom->generateRandomString(0);
     }
 
     /**
@@ -82,6 +90,6 @@ class StrRandomTest extends TestCase
         $this->expectExceptionMessage('Max length is too large (max: ' . StrRandom::$maxRandomLength . ')');
 
         // This should trigger the exception
-        StrRandom::generateRandomString(1, StrRandom::$maxRandomLength + 1);
+        $this->strRandom->generateRandomString(1, StrRandom::$maxRandomLength + 1);
     }
 }

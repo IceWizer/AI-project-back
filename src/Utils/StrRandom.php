@@ -19,7 +19,7 @@ class StrRandom
      * @param  int $maxLength Optional. If not provided, the string length will be equal to $minLength
      * @return string
      */
-    public static function generateRandomString(int $minLength, int $maxLength = null): string
+    public function generateRandomString(int $minLength, int $maxLength = null): string
     {
         if ($maxLength === null) {
             $maxLength = $minLength;

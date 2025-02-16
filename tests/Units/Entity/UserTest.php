@@ -5,7 +5,7 @@ namespace App\Tests\Units\Entity;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Tests\Common\BaseTestCase;
-use Ramsey\Uuid\Uuid;
+use Symfony\Component\Uid\Uuid;
 
 class UserTest extends BaseTestCase
 {

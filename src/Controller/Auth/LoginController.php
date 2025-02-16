@@ -14,6 +14,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Constraints\Email as ConstraintsEmail;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Required;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Validation;
@@ -168,7 +169,7 @@ class LoginController extends AbstractController
         } catch (\Exception $e) {
             $em->rollback();
             return $this->json([
-                'message' => 'An error occurred while sending the email',
+                'message' => $e->getMessage(),
             ], 500);
         }
 
